@@ -1,6 +1,7 @@
 package com.github.fahjulian.rain;
 
 import com.github.fahjulian.rain.graphics.Screen;
+import com.github.fahjulian.rain.input.Keyboard;
 
 import java.awt.Color;
 import java.awt.Canvas;
@@ -18,23 +19,29 @@ public class Game extends Canvas implements Runnable {
   public static int width = 300;
   public static int height = width / 16 * 9;
   public static int scale = 3;
+  public static String title = "Rain";
 
   private Thread thread;
   private JFrame frame;
   private boolean running = false;
 
   private Screen screen;
+  private Keyboard keyboard;
 
   private BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
   private int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+
+  int cameraX = 0, cameraY = 0;
 
   public Game() {
     Dimension size = new Dimension(width * scale, height * scale);
     setPreferredSize(size);
 
     screen = new Screen(width, height);
+    keyboard = new Keyboard();
 
     frame = new JFrame();
+    frame.addKeyListener(keyboard);
   }
 
   public synchronized void start() {
@@ -54,10 +61,34 @@ public class Game extends Canvas implements Runnable {
 
   @Override
   public void run() {
+    final double fps = 60.0;
+    final double nsPerUpdate = 1.0e9 / fps;
+    long timer = System.currentTimeMillis();
+    long lastCycle = System.nanoTime();
+    int updates = 0, frames = 0;
+    double excessTicks = 0.0;
+
     while (running) {
-      update();
+      long now = System.nanoTime();
+      excessTicks += (now - lastCycle) / nsPerUpdate;
+      lastCycle = now;
+
+      while (excessTicks >= 1) {
+        update();
+        excessTicks--;
+        updates++;
+      }
       render();
+      frames++;
+
+      if (System.currentTimeMillis() - timer > 1000) {
+        frame.setTitle(title + "  |  " + frames + " FPS, " + updates + " UPS");
+        timer += 1000;
+        updates = 0;
+        frames = 0;
+      }
     }
+    stop();
   }
 
   public void render() {
@@ -68,7 +99,7 @@ public class Game extends Canvas implements Runnable {
     }
 
     screen.clear();
-    screen.render();
+    screen.render(cameraX, cameraY);
 
     for (int i = 0; i < pixels.length; i++)
       pixels[i] = screen.pixels[i];
@@ -83,7 +114,12 @@ public class Game extends Canvas implements Runnable {
   }
 
   public void update() {
+    keyboard.update();
 
+    if (keyboard.up) cameraY--;
+    if (keyboard.down) cameraY++;
+    if (keyboard.right) cameraX++;
+    if (keyboard.left) cameraX--;
   }
 
   public static void main(String[] args) {

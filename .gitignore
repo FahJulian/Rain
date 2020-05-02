@@ -7,3 +7,6 @@ test/
 .vscode/
 .classpath
 .project
+
+# Gimp
+.gimp/

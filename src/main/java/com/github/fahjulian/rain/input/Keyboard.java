@@ -7,12 +7,20 @@ public class Keyboard implements KeyListener {
 
     private boolean[] keys = new boolean[120];
     public boolean up, down, left, right;
+    public boolean w, a, s, d;
+    public boolean autoCenterCamera = true;
+    public boolean space = false;
 
     public void update() {
-        up = keys[KeyEvent.VK_UP] || keys[KeyEvent.VK_W];
-        down = keys[KeyEvent.VK_DOWN] || keys[KeyEvent.VK_S];
-        right = keys[KeyEvent.VK_RIGHT] || keys[KeyEvent.VK_D];
-        left = keys[KeyEvent.VK_LEFT] || keys[KeyEvent.VK_A];
+        up = keys[KeyEvent.VK_UP];
+        down = keys[KeyEvent.VK_DOWN];
+        right = keys[KeyEvent.VK_RIGHT];
+        left = keys[KeyEvent.VK_LEFT];
+        w = keys[KeyEvent.VK_W];
+        a = keys[KeyEvent.VK_A];
+        s = keys[KeyEvent.VK_S];
+        d = keys[KeyEvent.VK_D];
+        space = keys[KeyEvent.VK_SPACE];
     }
 
     @Override
@@ -23,7 +31,8 @@ public class Keyboard implements KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e)
-    {
+    {   
+        if (e.getKeyCode() == KeyEvent.VK_X) autoCenterCamera = !autoCenterCamera;
         keys[e.getKeyCode()] = false; 
     }
 

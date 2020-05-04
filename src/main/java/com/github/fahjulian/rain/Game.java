@@ -1,11 +1,11 @@
 package com.github.fahjulian.rain;
 
-import com.github.fahjulian.rain.Position;
 import com.github.fahjulian.rain.graphics.Screen;
 import com.github.fahjulian.rain.level.Level;
-import com.github.fahjulian.rain.level.RandomLevel;
 import com.github.fahjulian.rain.input.Keyboard;
+import com.github.fahjulian.rain.entity.mob.Player;
 
+import java.awt.Font;
 import java.awt.Color;
 import java.awt.Canvas;
 import java.awt.Graphics;
@@ -29,6 +29,7 @@ public class Game extends Canvas implements Runnable {
     private boolean running = false;
 
     private Screen screen;
+    private Player player;
     private Level level;
     private Keyboard keyboard;
 
@@ -40,10 +41,13 @@ public class Game extends Canvas implements Runnable {
     public Game() {
         Dimension size = new Dimension(width * scale, height * scale);
         setPreferredSize(size);
-
+        
         screen = new Screen(width, height);
-        level = new RandomLevel(64, 64);
+        // level = new RandomLevel(64, 64);
+        level = Level.SPAWN_LEVEL;
         keyboard = new Keyboard();
+        Position spawnPosition = new GridPosition(80, 18).toPosition(16);
+        player = new Player(spawnPosition, level, keyboard);
 
         frame = new JFrame();
         frame.addKeyListener(keyboard);
@@ -117,6 +121,7 @@ public class Game extends Canvas implements Runnable {
 
         screen.clear();
         level.render(cameraPos, screen);
+        player.render(screen);
 
         for (int i = 0; i < pixels.length; i++)
             pixels[i] = screen.pixels[i];
@@ -125,6 +130,10 @@ public class Game extends Canvas implements Runnable {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, getWidth(), getHeight());
         g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", 0, 10));
+        g.drawString(String.format("Camera: (%d, %d)", cameraPos.x, cameraPos.y), 15, 15);
+        g.drawString(String.format("Player: (%d, %d)", player.pos.x, player.pos.y), 15, 25);
         
         g.dispose();
         bs.show();
@@ -135,11 +144,17 @@ public class Game extends Canvas implements Runnable {
      */
     public void update() {
         keyboard.update();
+        player.update();
 
-        if (keyboard.up) cameraPos.y--;
-        if (keyboard.down) cameraPos.y++;
-        if (keyboard.right) cameraPos.x++;
-        if (keyboard.left) cameraPos.x--;
+        if (keyboard.up) cameraPos.y -= 2;
+        if (keyboard.down) cameraPos.y += 2;
+        if (keyboard.right) cameraPos.x += 2;
+        if (keyboard.left) cameraPos.x -= 2;
+
+        if (keyboard.autoCenterCamera || keyboard.space) {
+            cameraPos.x = player.pos.x - (width - 8) / 2;
+            cameraPos.y = player.pos.y - (height - 8) / 2;
+        }
 
         screen.setCameraPos(cameraPos.x, cameraPos.y);
     }

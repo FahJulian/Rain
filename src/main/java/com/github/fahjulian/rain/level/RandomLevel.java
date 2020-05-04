@@ -16,7 +16,7 @@ public class RandomLevel extends Level {
     }
 
     @Override
-    protected void generateLevel() {
+    protected void load() {
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
                 tiles[x + y * cols] = r.nextInt(4);

@@ -7,11 +7,14 @@ import com.github.fahjulian.rain.level.tiles.Tile;
 
 public abstract class Level {
     
+    public static final Level SPAWN_LEVEL = new SpawnLevel("src/main/resources/levels/castle.png");
+
+    protected String path;
     protected int rows, cols;
     protected int[] tiles;
 
     /**
-     * Construct a randomly generated level
+     * Construct a level with a given size. Only for randomly generated levels
      * @param rows Rows of Tiles in the Map
      * @param cols Cols of Tiles in the Map
      */
@@ -19,16 +22,19 @@ public abstract class Level {
         this.rows = rows;
         this.cols = cols;
         tiles = new int[rows * cols];
-        generateLevel();
+        load();
     }
 
     /**
      * Construct a level from a file
      * @param path Path to the file relative to the Project folder
      */
-    protected Level(String path) {
-        loadLevel(path);
+    public Level(String path) {
+        this.path = path;
+        load();
     }
+
+    protected abstract void load();
 
     /**
      * Update the level and all its members
@@ -64,22 +70,25 @@ public abstract class Level {
             return Tile.voidTile;
 
         int tileID = tiles[pos.col + pos.row * cols];
-        switch (tileID) {
-            case 0: return Tile.grass;
-            case 1: return Tile.stone;
-            default: return Tile.voidTile;
+        return Tile.getTileByID(tileID);
+    }
+
+    protected int rgbaToTileID(int rgba) {
+        switch (rgba) {
+            case 0xff008800: return Tile.grass.ID;
+            case 0xffffff00: return Tile.flower.ID;
+            case 0xff888888: return Tile.rock.ID;
+            case 0xff880000: return Tile.brick.ID;
+            case 0xff884400: return Tile.log.ID;
+            case 0xff004400: return Tile.leaves.ID;
+            case 0xff0088ff: return Tile.air.ID;
+            case 0xffffffff: return Tile.cloud.ID;
+            default: return Tile.voidTile.ID;
         }
     }
 
+    @SuppressWarnings("unused")
     private void time() {
-
-    }
-
-    private void loadLevel(String path) {
-
-    }
-
-    protected void generateLevel() {
 
     }
 

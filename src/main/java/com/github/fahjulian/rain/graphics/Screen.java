@@ -60,6 +60,24 @@ public class Screen {
         }
     }
 
+    public void renderPlayer(Position pos, Sprite sprite) {
+        pos.x -= cameraPos.x;
+        pos.y -= cameraPos.y;
+
+        for (int y = 0; y < sprite.SIZE; y++) {
+            int pixelY = y + pos.y;
+            if (pixelY < 0 || pixelY >= height) continue;
+            for (int x = 0; x < sprite.SIZE; x++) {
+                int pixelX = x + pos.x; 
+                if (pixelX < 0 || pixelX >= width) continue;
+                int color = sprite.pixels[x + y * sprite.SIZE];
+
+                if (color != 0xffff00ff)
+                    pixels[pixelX + pixelY * width] = color;
+            }
+        }
+    }
+
     public void setCameraPos(int x, int y) {
         cameraPos.x = x;
         cameraPos.y = y;

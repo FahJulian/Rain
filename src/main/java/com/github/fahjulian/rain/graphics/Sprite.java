@@ -2,34 +2,37 @@ package com.github.fahjulian.rain.graphics;
 
 import java.util.Arrays;
 
+import com.github.fahjulian.rain.math.GridPosition;
+
 public class Sprite {
     
     public final int SIZE;
-    private int x;
-    private int y;
     public int[] pixels;
     private Spritesheet sheet;
+    private GridPosition sheetPosition;
 
     public static Sprite 
-        voidSprite = new Sprite(16, 0x222222),
-        air = new Sprite(16, 0x00ccff),
-        cloud = new Sprite(16, 0xeeeeee),
-        grass = new Sprite(16, 0, 0, Spritesheet.tiles),
-        flower = new Sprite(16, 0, 1, Spritesheet.tiles),
-        stone = new Sprite(16, 0, 2, Spritesheet.tiles),
-        brick = new Sprite(16, 2, 0, Spritesheet.tiles),
-        stem = new Sprite(16, 2, 2, Spritesheet.tiles),
-        leaves = new Sprite(16, 1, 2, Spritesheet.tiles);
+        VOID = new Sprite(16, 0x222222),
+        AIR = new Sprite(16, 0x00ccff),
+        CLOUD = new Sprite(16, 0xeeeeee),
+        GRASS = new Sprite(16, 0, 0, Spritesheet.TILES),
+        FLOWER = new Sprite(16, 0, 1, Spritesheet.TILES),
+        STONE = new Sprite(16, 0, 2, Spritesheet.TILES),
+        BRICK_RED = new Sprite(16, 2, 0, Spritesheet.TILES),
+        BRICK_GREY = new Sprite(16, 3, 0, Spritesheet.TILES),
+        STEM = new Sprite(16, 2, 2, Spritesheet.TILES),
+        LEAVES = new Sprite(16, 1, 2, Spritesheet.TILES);
 
     public static Sprite 
-        playerFront = new Sprite(16, 15, 1, Spritesheet.tiles),
-        playerBack = new Sprite(16, 15, 0, Spritesheet.tiles),
-        playerRight1 = new Sprite(16, 15, 2, Spritesheet.tiles),
-        playerRight2 = new Sprite(16, 15, 3, Spritesheet.tiles),
-        playerLeft1 = new Sprite(16, 15, 2, Spritesheet.tiles).flipHorizontally(),
-        playerLeft2 = new Sprite(16, 15, 3, Spritesheet.tiles).flipHorizontally();
+        PLAYER_FRONT = new Sprite(16, 15, 1, Spritesheet.TILES),
+        PLAYER_BACK = new Sprite(16, 15, 0, Spritesheet.TILES),
+        PLAYER_RIGHT_1 = new Sprite(16, 15, 2, Spritesheet.TILES),
+        PLAYER_RIGHT_2 = new Sprite(16, 15, 3, Spritesheet.TILES),
+        PLAYER_LEFT_1 = new Sprite(16, 15, 2, Spritesheet.TILES).flipHorizontally(),
+        PLAYER_LEFT_2 = new Sprite(16, 15, 3, Spritesheet.TILES).flipHorizontally();
     
-
+    public static Sprite
+        PROJECTILE_WIZARD = new Sprite(16, 0, 0, Spritesheet.PROJECTILES_WIZZARD);
     /**
      * Constructs a new Sprite from a Spritesheet
      * @param size Width & Height of the Sprite
@@ -39,8 +42,7 @@ public class Sprite {
      */
     protected Sprite(int size, int row, int col, Spritesheet sheet) {
         this.SIZE = size;
-        this.x = col * size;
-        this.y = row * size;
+        this.sheetPosition = new GridPosition(row * size, col * size);
         this.sheet = sheet;
         this.pixels = new int[SIZE * SIZE];
         load();
@@ -60,7 +62,7 @@ public class Sprite {
     private void load() {
         for (int y = 0; y < SIZE; y++) {
             for (int x = 0; x < SIZE; x++) {
-                pixels[x + y * SIZE] = sheet.pixels[this.x + x + (y + this.y) * sheet.SIZE];
+                pixels[x + y * SIZE] = sheet.pixels[sheetPosition.col + x + (y + sheetPosition.row) * sheet.SIZE];
             }
         }
     }

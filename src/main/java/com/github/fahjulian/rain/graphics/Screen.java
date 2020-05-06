@@ -2,7 +2,10 @@ package com.github.fahjulian.rain.graphics;
 
 import java.util.Random;
 
-import com.github.fahjulian.rain.Position;
+import com.github.fahjulian.rain.entity.mob.Player;
+import com.github.fahjulian.rain.entity.projectile.Projectile;
+import com.github.fahjulian.rain.level.tiles.Tile;
+import com.github.fahjulian.rain.math.Position;
 
 public class Screen {
 
@@ -55,27 +58,24 @@ public class Screen {
             for (int x = 0; x < sprite.SIZE; x++) {
                 int pixelX = x + pos.x;
                 if (pixelX < 0 || pixelX >= width) continue;
-                pixels[pixelX + pixelY * width] = sprite.pixels[x + y * sprite.SIZE];
-            }
-        }
-    }
 
-    public void renderPlayer(Position pos, Sprite sprite) {
-        pos.x -= cameraPos.x;
-        pos.y -= cameraPos.y;
-
-        for (int y = 0; y < sprite.SIZE; y++) {
-            int pixelY = y + pos.y;
-            if (pixelY < 0 || pixelY >= height) continue;
-            for (int x = 0; x < sprite.SIZE; x++) {
-                int pixelX = x + pos.x; 
-                if (pixelX < 0 || pixelX >= width) continue;
                 int color = sprite.pixels[x + y * sprite.SIZE];
-
                 if (color != 0xffff00ff)
                     pixels[pixelX + pixelY * width] = color;
             }
         }
+    }
+
+    public void renderTile(Position pos, Tile tile) {
+        renderSprite(pos, tile.getSprite());
+    }
+
+    public void renderPlayer(Position pos, Player player) {
+        renderSprite(pos, player.getSprite());
+    }
+
+    public void renderProjectile(Position pos, Projectile p) {
+        renderSprite(pos, p.getSprite());
     }
 
     public void setCameraPos(int x, int y) {

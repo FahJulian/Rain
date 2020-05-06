@@ -1,4 +1,4 @@
-package com.github.fahjulian.rain;
+package com.github.fahjulian.rain.math;
 
 public class GridPosition {
 

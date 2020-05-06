@@ -5,11 +5,11 @@ import java.awt.event.KeyEvent;
 
 public class Keyboard implements KeyListener {
 
-    private boolean[] keys = new boolean[120];
-    public boolean up, down, left, right;
-    public boolean w, a, s, d;
-    public boolean autoCenterCamera = true;
-    public boolean space = false;
+    private static boolean[] keys = new boolean[120];
+    public static boolean up, down, left, right;
+    public static boolean w, a, s, d;
+    public static boolean autoCenterCamera = true;
+    public static boolean space = false;
 
     public void update() {
         up = keys[KeyEvent.VK_UP];

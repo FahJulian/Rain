@@ -9,7 +9,8 @@ import java.io.File;
 
 public class Spritesheet {
 
-    public static Spritesheet tiles = new Spritesheet("src/main/resources/textures/spritesheet.png", 256);
+    public static Spritesheet TILES = new Spritesheet("src/main/resources/textures/spritesheet.png", 256);
+    public static Spritesheet PROJECTILES_WIZZARD = new Spritesheet("src/main/resources/textures/projectiles/wizzard.png", 48);
 
     private String path;
     public final int SIZE;

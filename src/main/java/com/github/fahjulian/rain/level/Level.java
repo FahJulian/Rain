@@ -1,7 +1,12 @@
 package com.github.fahjulian.rain.level;
 
-import com.github.fahjulian.rain.Position;
-import com.github.fahjulian.rain.GridPosition;
+import com.github.fahjulian.rain.math.Position;
+import com.github.fahjulian.rain.math.GridPosition;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.github.fahjulian.rain.entity.Entity;
 import com.github.fahjulian.rain.graphics.Screen;
 import com.github.fahjulian.rain.level.tiles.Tile;
 
@@ -12,6 +17,8 @@ public abstract class Level {
     protected String path;
     protected int rows, cols;
     protected int[] tiles;
+
+    private List<Entity> entities = new ArrayList<Entity>();
 
     /**
      * Construct a level with a given size. Only for randomly generated levels
@@ -40,7 +47,8 @@ public abstract class Level {
      * Update the level and all its members
      */
     public void update() {
-
+        for (Entity e: entities) 
+            e.update();
     }
     
     /**
@@ -51,13 +59,16 @@ public abstract class Level {
     public void render(Position offset, Screen screen) {
         GridPosition min = new GridPosition(offset.y >> 4, offset.x >> 4);
         GridPosition max = new GridPosition((offset.y + screen.height) >> 4, (offset.x + screen.width) >> 4);
-
+        
         for (int row = min.row; row <= max.row; row++) {
             for (int col = min.col; col <= max.col; col++) {
                 GridPosition tilePos = new GridPosition(row, col);
                 getTile(tilePos).render(tilePos, screen);
             }
         }
+
+        for (Entity e: entities) 
+            e.render(screen);
     }
 
     /**
@@ -67,7 +78,7 @@ public abstract class Level {
      */
     public Tile getTile(GridPosition pos) {
         if (pos.row < 0 || pos.col < 0 || pos.row >= rows || pos.col >= cols)
-            return Tile.voidTile;
+            return Tile.VOID;
 
         int tileID = tiles[pos.col + pos.row * cols];
         return Tile.getTileByID(tileID);
@@ -75,16 +86,20 @@ public abstract class Level {
 
     protected int rgbaToTileID(int rgba) {
         switch (rgba) {
-            case 0xff008800: return Tile.grass.ID;
-            case 0xffffff00: return Tile.flower.ID;
-            case 0xff888888: return Tile.rock.ID;
-            case 0xff880000: return Tile.brick.ID;
-            case 0xff884400: return Tile.log.ID;
-            case 0xff004400: return Tile.leaves.ID;
-            case 0xff0088ff: return Tile.air.ID;
-            case 0xffffffff: return Tile.cloud.ID;
-            default: return Tile.voidTile.ID;
+            case 0xff008800: return Tile.GRASS.ID;
+            case 0xffffff00: return Tile.FLOWER.ID;
+            case 0xff888888: return Tile.ROCK.ID;
+            case 0xff880000: return Tile.BRICK_GREY.ID;
+            case 0xff884400: return Tile.LOG.ID;
+            case 0xff004400: return Tile.LEAVES.ID;
+            case 0xff0088ff: return Tile.AIR.ID;
+            case 0xffffffff: return Tile.CLOUD.ID;
+            default: return Tile.VOID.ID;
         }
+    }
+
+    public void add(Entity e) {
+        entities.add(e);
     }
 
     @SuppressWarnings("unused")

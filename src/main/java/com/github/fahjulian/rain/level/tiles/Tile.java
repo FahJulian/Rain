@@ -1,28 +1,29 @@
 package com.github.fahjulian.rain.level.tiles;
 
-import com.github.fahjulian.rain.GridPosition;
+import com.github.fahjulian.rain.math.GridPosition;
+import com.github.fahjulian.rain.math.Position;
 import com.github.fahjulian.rain.graphics.Sprite;
 import com.github.fahjulian.rain.graphics.Screen;
-import com.github.fahjulian.rain.Position;
 
 public abstract class Tile {
-
+    
     private static int id = 0;
     private static Tile[] tiles = new Tile[128];
-    public final int ID;
-
-    public static Tile 
-        voidTile = new NormalTile(Sprite.voidSprite),
-        air = new NormalTile(Sprite.air),
-        cloud = new NormalTile(Sprite.cloud),
-        grass = new NormalTile(Sprite.grass),
-        flower = new NormalTile(Sprite.flower),
-        rock = new SolidTile(Sprite.stone),
-        brick = new SolidTile(Sprite.brick),
-        log = new SolidTile(Sprite.stem),
-        leaves = new NormalTile(Sprite.leaves);
     
-    public Sprite sprite;
+    public static Tile 
+        VOID = new NormalTile(Sprite.VOID),
+        AIR = new NormalTile(Sprite.AIR),
+        CLOUD = new NormalTile(Sprite.CLOUD),
+        GRASS = new NormalTile(Sprite.GRASS),
+        FLOWER = new NormalTile(Sprite.FLOWER),
+        ROCK = new SolidTile(Sprite.STONE),
+        BRICK_RED = new SolidTile(Sprite.BRICK_RED),
+        BRICK_GREY = new SolidTile(Sprite.BRICK_GREY),
+        LOG = new SolidTile(Sprite.STEM),
+        LEAVES = new NormalTile(Sprite.LEAVES);
+    
+    public final int ID;
+    private Sprite sprite;
 
     protected Tile(Sprite sprite) {
         this.sprite = sprite;
@@ -35,11 +36,14 @@ public abstract class Tile {
     }
 
     public void render(GridPosition pos, Screen screen) {
-        screen.renderSprite(new Position(pos.col << 4, pos.row << 4), sprite);
+        screen.renderTile(new Position(pos.col << 4, pos.row << 4), this);
     }
 
     public static Tile getTileByID(int id) {
         return tiles[id];
     }
 
+    public Sprite getSprite() {
+        return sprite;
+    }
 }

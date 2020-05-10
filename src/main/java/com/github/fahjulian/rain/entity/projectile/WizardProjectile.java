@@ -1,20 +1,15 @@
 package com.github.fahjulian.rain.entity.projectile;
 
-import com.github.fahjulian.rain.entity.Entity;
 import com.github.fahjulian.rain.graphics.Sprite;
 
 public class WizardProjectile extends Projectile {
 
-    public static class Specs extends Projectile.Specs<WizardProjectile> {
+    public static class Specs extends Projectile.Specs {
 
         public Specs(float originX, float originY, float targetX, float targetY) {
             super(originX, originY, targetX, targetY, SPEED, RANGE, RATE_OF_FIRE, SIZE);
         }
 
-        @Override
-        public Class<? extends Entity> getType() {
-            return WizardProjectile.class;
-        }
     }
 
     public static final float RANGE = 200.0f;
@@ -23,7 +18,7 @@ public class WizardProjectile extends Projectile {
     public static final int SIZE = 10;
     public static final Sprite SPRITE = Sprite.PROJECTILE_WIZARD;
 
-    public WizardProjectile(Entity.Specs<WizardProjectile> specs) {
+    public WizardProjectile(WizardProjectile.Specs specs) {
         super(specs, SPRITE);
     }
 }

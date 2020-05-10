@@ -8,7 +8,7 @@ import com.github.fahjulian.rain.graphics.Sprite;
 
 public abstract class Projectile extends Entity implements Entity.Visible {
 
-    public static abstract class Specs<T extends Projectile> extends Entity.Specs<T> {
+    public static abstract class Specs extends Entity.Specs {
         private float originX, originY;
         private float targetX, targetY;
         private float speed;
@@ -38,16 +38,15 @@ public abstract class Projectile extends Entity implements Entity.Visible {
     private final int SIZE;
     public final float RATE_OF_FIRE;
 
-    protected Projectile(Entity.Specs<? extends Projectile> specs, Sprite sprite) {
-        Projectile.Specs<? extends Projectile> s = (Projectile.Specs<? extends Projectile>) specs;
-        this.x = this.originX = s.originX;
-        this.y = this.originY = s.originY;
-        this.angle = (float) Math.atan2(s.targetY - s.originY, s.targetX - s.originX);
-        this.velX = (float) Math.cos(angle) * s.speed;
-        this.velY = (float) Math.sin(angle) * s.speed;
-        this.RANGE = s.range;
-        this.RATE_OF_FIRE = s.rateOfFire;
-        this.SIZE = s.size;
+    protected Projectile(Projectile.Specs specs, Sprite sprite) {
+        this.x = this.originX = specs.originX;
+        this.y = this.originY = specs.originY;
+        this.angle = (float) Math.atan2(specs.targetY - specs.originY, specs.targetX - specs.originX);
+        this.velX = (float) Math.cos(angle) * specs.speed;
+        this.velY = (float) Math.sin(angle) * specs.speed;
+        this.RANGE = specs.range;
+        this.RATE_OF_FIRE = specs.rateOfFire;
+        this.SIZE = specs.size;
         this.sprite = sprite;
     }
 

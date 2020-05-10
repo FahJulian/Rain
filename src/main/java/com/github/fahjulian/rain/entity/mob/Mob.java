@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public abstract class Mob extends Entity implements Entity.Visible {
     
-    public static abstract class Specs<T extends Mob> extends Entity.Specs<T> {
+    public static abstract class Specs extends Entity.Specs {
         private int x, y;
 
         protected Specs(int x, int y) {
@@ -28,9 +28,8 @@ public abstract class Mob extends Entity implements Entity.Visible {
     protected int updateCount;
     protected ArrayList<Projectile> projectiles;
 
-    protected Mob(Entity.Specs<? extends Mob> specs) {
-        Mob.Specs<? extends Mob> s = (Mob.Specs<? extends Mob>) specs;
-        this.pos = new Position(s.x, s.y);
+    protected Mob(Mob.Specs specs) {
+        this.pos = new Position(specs.x, specs.y);
         projectiles = new ArrayList<Projectile>();
     }
     

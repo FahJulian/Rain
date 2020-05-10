@@ -2,7 +2,6 @@ package com.github.fahjulian.rain.entity.mob;
 
 import com.github.fahjulian.rain.Direction;
 import com.github.fahjulian.rain.Game;
-import com.github.fahjulian.rain.entity.Entity;
 import com.github.fahjulian.rain.entity.projectile.Projectile;
 import com.github.fahjulian.rain.entity.projectile.WizardProjectile;
 import com.github.fahjulian.rain.math.Position;
@@ -13,21 +12,16 @@ import com.github.fahjulian.rain.math.Vector;
 
 public class Player extends Mob {
     
-    public static class Specs extends Mob.Specs<Player> {
+    public static class Specs extends Mob.Specs {
         public Specs(int x, int y) {
             super(x, y);
-        }
-
-        @Override
-        public Class<? extends Entity> getType() {
-            return Player.class;
         }
     }
     
     private int updateCount = 0;
     private boolean shoot;
     
-    public Player(Entity.Specs<Player> specs) {
+    public Player(Player.Specs specs) {
         super(specs);
 
         sprite = Sprite.PLAYER_FRONT;

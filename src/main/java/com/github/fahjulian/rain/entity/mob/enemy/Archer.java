@@ -1,7 +1,6 @@
 package com.github.fahjulian.rain.entity.mob.enemy;
 
 import com.github.fahjulian.rain.Game;
-import com.github.fahjulian.rain.entity.Entity;
 import com.github.fahjulian.rain.entity.mob.Mob;
 import com.github.fahjulian.rain.entity.projectile.Projectile;
 import com.github.fahjulian.rain.entity.projectile.ArcherProjectile;
@@ -12,18 +11,13 @@ import com.github.fahjulian.rain.math.Vector;
 
 public class Archer extends Mob {
 
-    public static class Specs extends Mob.Specs<Archer> {
+    public static class Specs extends Mob.Specs {
         public Specs(int x, int y) {
             super(x, y);
         }
-
-        @Override
-        public Class<? extends Entity> getType() {
-            return Archer.class;
-        }
     }
 
-    public Archer(Entity.Specs<Archer> specs) {
+    public Archer(Archer.Specs specs) {
         super(specs);
         sprite = Sprite.ARCHER;
     }

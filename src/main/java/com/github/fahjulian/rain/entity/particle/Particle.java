@@ -8,7 +8,7 @@ import com.github.fahjulian.rain.graphics.Sprite;
 
 public class Particle extends Entity implements Entity.Visible {
 
-    public static class Specs extends Entity.Specs<Particle> {
+    public static class Specs extends Entity.Specs {
         private float x, y;
         private int duration;
 
@@ -16,11 +16,6 @@ public class Particle extends Entity implements Entity.Visible {
             this.x = x;
             this.y = y;
             this.duration = duration;
-        }
-
-        @Override
-        public Class<? extends Entity> getType() {
-            return Particle.class;
         }
     }
 
@@ -32,20 +27,16 @@ public class Particle extends Entity implements Entity.Visible {
     protected float velX, velY;
     protected int duration;
 
-    public Particle(Entity.Specs<Particle> specs) {
-        Particle.Specs s = (Particle.Specs) specs; 
-        this.x = s.x;
-        this.y = s.y;
-        this.duration = s.duration;
+    public Particle(Particle.Specs specs) {
+        this.x = specs.x;
+        this.y = specs.y;
+        this.duration = specs.duration;
 
         this.velX = (float) random.nextGaussian() * 0.1f;
         this.velY = (float) random.nextGaussian() * 0.1f;
         this.sprite = SPRITE;
     }
 
-    public Particle(Particle.Specs specs) {
-        this((Entity.Specs<Particle>) specs);
-    }
 
     @Override
     public void render(Screen screen) {

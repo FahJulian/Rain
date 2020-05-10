@@ -8,8 +8,8 @@ import com.github.fahjulian.rain.level.Level;
 
 public abstract class Entity {
 
-    public static abstract class Specs<T extends Entity> {
-        public abstract Class<? extends Entity> getType();
+    public static abstract class Specs {
+        
     }
     
     public interface Visible {

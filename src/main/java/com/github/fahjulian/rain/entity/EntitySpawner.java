@@ -13,10 +13,9 @@ public final class EntitySpawner extends Entity {
         MOB, PARTICLE;
     }
 
-    public EntitySpawner(Class<? extends Entity> type, Entity.Specs<?> specs, int amount) {
+    public EntitySpawner(Class<? extends Entity> type, Entity.Specs specs, int amount) {
         for (int i = 0; i < amount; i++) {
             try {
-                System.out.println(specs.getClass());
                 Entity e = type.getConstructor(specs.getClass()).newInstance(specs);
                 entities.add(e);
             } catch (Exception e) {

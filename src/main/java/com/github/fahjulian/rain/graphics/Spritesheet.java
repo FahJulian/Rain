@@ -11,6 +11,7 @@ public class Spritesheet {
 
     public static Spritesheet TILES = new Spritesheet("src/main/resources/textures/spritesheet.png", 256);
     public static Spritesheet PROJECTILES_WIZZARD = new Spritesheet("src/main/resources/textures/projectiles/wizzard.png", 48);
+    public static Spritesheet ARCHER = new Spritesheet("src/main/resources/textures/archer.png", 48);
 
     private String path;
     public final int SIZE;

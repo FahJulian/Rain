@@ -7,6 +7,10 @@ import com.github.fahjulian.rain.graphics.Screen;
 
 public abstract class Tile {
     
+    public static interface Solid {
+
+    }
+
     private static int id = 0;
     private static Tile[] tiles = new Tile[128];
     
@@ -32,11 +36,11 @@ public abstract class Tile {
     }
 
     public boolean isSolid() {
-        return this instanceof Collidable;
+        return this instanceof Tile.Solid;
     }
 
     public void render(GridPosition pos, Screen screen) {
-        screen.renderTile(new Position(pos.col << 4, pos.row << 4), this);
+        screen.renderSprite(new Position(pos.col << 4, pos.row << 4), sprite);
     }
 
     public static Tile getTileByID(int id) {

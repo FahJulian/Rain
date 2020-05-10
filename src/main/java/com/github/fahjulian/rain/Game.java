@@ -4,9 +4,11 @@ import com.github.fahjulian.rain.graphics.Screen;
 import com.github.fahjulian.rain.level.Level;
 import com.github.fahjulian.rain.input.Keyboard;
 import com.github.fahjulian.rain.input.Mouse;
+import com.github.fahjulian.rain.entity.EntitySpawner;
 import com.github.fahjulian.rain.entity.mob.Player;
+import com.github.fahjulian.rain.entity.mob.enemy.Archer;
+import com.github.fahjulian.rain.entity.particle.Particle;
 import com.github.fahjulian.rain.math.Position;
-import com.github.fahjulian.rain.math.GridPosition;
 
 import java.awt.Font;
 import java.awt.Color;
@@ -22,6 +24,7 @@ import javax.swing.JFrame;
 public class Game extends Canvas implements Runnable {
     private static final long serialVersionUID = 1L;
     
+    public static Game runningGame;
     public static Position cameraPos = new Position(0, 0);
     
     public static int width = 1920 / 6;
@@ -43,17 +46,26 @@ public class Game extends Canvas implements Runnable {
     private int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
     public Game() {
+        if (runningGame != null) {
+            System.err.println("Only one game can be run at once.");
+            System.exit(-1);
+        }
+        else {
+            runningGame = this;
+        }
+
         Dimension size = new Dimension(width * scale, height * scale);
         setPreferredSize(size);
         
         screen = new Screen(width, height);
-        // level = new RandomLevel(64, 64);
         level = Level.SPAWN_LEVEL;
+        level.add(new EntitySpawner(Particle.class, new Particle.Specs(10 << 4, 10 << 4, 50), 100));
+        level.add(new EntitySpawner(Archer.class, new Archer.Specs(50, 50), 100));
         keyboard = new Keyboard();
         mouse = new Mouse();
-        Position spawnPosition = new GridPosition(80, 18).toPosition(16);
-        player = new Player(spawnPosition, level);
-
+        player = new Player(new Player.Specs(10 << 4, 10 << 4));
+        level.add(player);
+        
         frame = new JFrame();
 
         addKeyListener(keyboard);
@@ -129,7 +141,6 @@ public class Game extends Canvas implements Runnable {
 
         screen.clear();
         level.render(cameraPos, screen);
-        player.render(screen);
 
         for (int i = 0; i < pixels.length; i++)
             pixels[i] = screen.pixels[i];
@@ -152,7 +163,6 @@ public class Game extends Canvas implements Runnable {
      */
     public void update() {
         keyboard.update();
-        player.update();
         level.update();
 
         if (Keyboard.up) cameraPos.y -= 2;
@@ -166,6 +176,17 @@ public class Game extends Canvas implements Runnable {
         }
 
         screen.setCameraPos(cameraPos.x, cameraPos.y);
+
+        if (player.isRemoved()) 
+            System.out.println("GAME OVER!!");
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public static Game get() {
+        return runningGame;
     }
 
     public static void main(String[] args) {

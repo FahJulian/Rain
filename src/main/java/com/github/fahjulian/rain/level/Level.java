@@ -47,8 +47,14 @@ public abstract class Level {
      * Update the level and all its members
      */
     public void update() {
-        for (Entity e: entities) 
+        for (int i = 0; i < entities.size(); i++) {
+            Entity e = entities.get(i);
+            if (e.isRemoved()) {
+                entities.remove(i);
+                continue;
+            }
             e.update();
+        }
     }
     
     /**
@@ -67,8 +73,10 @@ public abstract class Level {
             }
         }
 
-        for (Entity e: entities) 
-            e.render(screen);
+        for (Entity e: entities) {
+            if (e instanceof Entity.Visible)
+                ((Entity.Visible) e).render(screen);
+        }
     }
 
     /**
@@ -82,6 +90,39 @@ public abstract class Level {
 
         int tileID = tiles[pos.col + pos.row * cols];
         return Tile.getTileByID(tileID);
+    }
+
+    /**
+     * Check if an Enity would collide with a tile if moved
+     * @param x The x-Position of the Entity
+     * @param y The y-Position of the Entity
+     * @param velX The x-Velocity of the Entity
+     * @param velY The y-Velocity of the Entity
+     * @param size The size of the Entity
+     * @return Whether or not the Entity would collide if moved
+     */
+    public boolean tileCollision(int x, int y, int velX, int velY, int size) {
+        for (int c = 0; c < 4; c++) {
+            GridPosition pos = new GridPosition();
+            pos.col = ((x + velX) + c % 2 * size) / 16;
+            pos.row = ((y + velY) + c / 2 * size) / 16;
+            if (getTile(pos).isSolid()) return true;
+        }
+
+        return false;
+    }
+    
+    /**
+     * Check if an Enity would collide with a tile if moved
+     * @param x The x-Position of the Entity
+     * @param y The y-Position of the Entity
+     * @param velX The x-Velocity of the Entity
+     * @param velY The y-Velocity of the Entity
+     * @param size The size of the Entity
+     * @return Whether or not the Entity would collide if moved
+     */
+    public boolean tileCollision(float x, float y, float velX, float velY, int size) {
+        return tileCollision((int) x, (int) y, (int) velX, (int) velY, size);
     }
 
     protected int rgbaToTileID(int rgba) {
@@ -100,6 +141,7 @@ public abstract class Level {
 
     public void add(Entity e) {
         entities.add(e);
+        e.setLevel(this);
     }
 
     @SuppressWarnings("unused")

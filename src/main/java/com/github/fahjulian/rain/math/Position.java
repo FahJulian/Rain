@@ -24,4 +24,9 @@ public class Position {
     public Position2f toFloat() {
         return new Position2f((float) x, (float) y);
     }
+
+    @Override
+    public Position clone() {
+        return new Position(this.x, this.y);
+    }
 }

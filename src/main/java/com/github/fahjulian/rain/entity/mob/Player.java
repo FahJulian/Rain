@@ -2,33 +2,46 @@ package com.github.fahjulian.rain.entity.mob;
 
 import com.github.fahjulian.rain.Direction;
 import com.github.fahjulian.rain.Game;
+import com.github.fahjulian.rain.entity.Entity;
 import com.github.fahjulian.rain.entity.projectile.Projectile;
 import com.github.fahjulian.rain.entity.projectile.WizardProjectile;
 import com.github.fahjulian.rain.math.Position;
-import com.github.fahjulian.rain.graphics.Screen;
 import com.github.fahjulian.rain.graphics.Sprite;
 import com.github.fahjulian.rain.input.Keyboard;
 import com.github.fahjulian.rain.input.Mouse;
-import com.github.fahjulian.rain.level.Level;
 import com.github.fahjulian.rain.math.Vector;
 
 public class Player extends Mob {
     
+    public static class Specs extends Mob.Specs<Player> {
+        public Specs(int x, int y) {
+            super(x, y);
+        }
+
+        @Override
+        public Class<? extends Entity> getType() {
+            return Player.class;
+        }
+    }
+    
     private int updateCount = 0;
     private boolean shoot;
-
-    public Player(Position pos, Level level) {
-        super(level);
-        this.pos = pos;
+    
+    public Player(Entity.Specs<Player> specs) {
+        super(specs);
 
         sprite = Sprite.PLAYER_FRONT;
     }
-    
+
     @Override
     public void update() {
-        if (Mouse.left) shoot = true;
+        super.update();
 
-        if (shoot && updateCount % 10 == 0) {
+        updateCount++;
+        if (Mouse.left) 
+            shoot = true;
+
+        if (shoot && updateCount % (int) (60.0f / WizardProjectile.RATE_OF_FIRE) == 0) {
             Position target = Game.cameraPos.add(Mouse.pos);
             shoot(target);
             shoot = false;
@@ -42,21 +55,14 @@ public class Player extends Mob {
 
         move(vel);
 
-        updateCount++;
         if (updateCount % 10 == 0) 
             animate();
     }
 
-    @Override
-    public void render(Screen screen) {
-        screen.renderPlayer(new Position(pos.x, pos.y), this);
-    }
-
     private void shoot(Position target) {
-        float angle = (float) Math.atan2(getCenter().y - target.y, getCenter().x - target.x);
-        Projectile p = new WizardProjectile(pos.toFloat(), angle, Sprite.PROJECTILE_WIZARD);
+        Projectile p = new WizardProjectile(new WizardProjectile.Specs(getCenter().x, getCenter().y, target.x, target.y));
+        p.setLevel(level);
         projectiles.add(p);
-        level.add(p);
     }
 
     private void animate() {

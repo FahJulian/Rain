@@ -2,15 +2,13 @@ package com.github.fahjulian.rain.graphics;
 
 import java.util.Random;
 
-import com.github.fahjulian.rain.entity.mob.Player;
-import com.github.fahjulian.rain.entity.projectile.Projectile;
-import com.github.fahjulian.rain.level.tiles.Tile;
 import com.github.fahjulian.rain.math.Position;
 
 public class Screen {
 
     public static final int MAP_SIZE = 64;
     public static final int MAP_SIZE_MASK = MAP_SIZE - 1;
+    public static final int TRANSPARENCY_COLOR = 0xffff00ff;
 
     public int width;
     public int height;
@@ -41,7 +39,21 @@ public class Screen {
      */
     public void clear() {
         for (int i = 0; i < pixels.length; i++) 
-        pixels[i] = 0x000000;
+            pixels[i] = 0x000000;
+    }
+
+    public void render(Sprite sprite, int posX, int posY) {
+        renderStatic(sprite, posX - cameraPos.x, posY - cameraPos.y);
+    }
+
+    public void renderStatic(Sprite sprite, int posX, int posY) {
+        for (int y = posY < 0 ? -posY : 0; y < sprite.getHeight() && y + posY < height; y++) {
+            for (int x = posX < 0 ? -posX : 0; x < sprite.getWidth() && x + posX < width; x++) {
+                int color = sprite.pixels[x + y * sprite.getWidth()];
+                if (color != TRANSPARENCY_COLOR)
+                    pixels[(posX + x) + (posY + y) * width] = color;
+            }
+        }
     }
 
     /**
@@ -50,32 +62,21 @@ public class Screen {
      * @param sprite The sprite to render
      */
     public void renderSprite(Position pos, Sprite sprite) {
+        pos = pos.clone();
         pos.x -= cameraPos.x;
         pos.y -= cameraPos.y;
-        for (int y = 0; y < sprite.SIZE; y++) {
+        for (int y = 0; y < sprite.getHeight(); y++) {
             int pixelY = y + pos.y;
             if (pixelY < 0 || pixelY >= height) continue;
-            for (int x = 0; x < sprite.SIZE; x++) {
+            for (int x = 0; x < sprite.getWidth(); x++) {
                 int pixelX = x + pos.x;
                 if (pixelX < 0 || pixelX >= width) continue;
 
-                int color = sprite.pixels[x + y * sprite.SIZE];
+                int color = sprite.pixels[x + y * sprite.getWidth()];
                 if (color != 0xffff00ff)
                     pixels[pixelX + pixelY * width] = color;
             }
         }
-    }
-
-    public void renderTile(Position pos, Tile tile) {
-        renderSprite(pos, tile.getSprite());
-    }
-
-    public void renderPlayer(Position pos, Player player) {
-        renderSprite(pos, player.getSprite());
-    }
-
-    public void renderProjectile(Position pos, Projectile p) {
-        renderSprite(pos, p.getSprite());
     }
 
     public void setCameraPos(int x, int y) {

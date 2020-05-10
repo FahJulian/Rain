@@ -14,4 +14,12 @@ public class Vector2f {
         this.y *= a;
         return this;
     }
+
+    public float abs() {
+        return (float) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+    }
+
+    public static Vector2f substract(Vector2f v1, Vector2f v2) {
+        return new Vector2f(v1.x - v2.x, v1.y - v2.y);
+    }
 }

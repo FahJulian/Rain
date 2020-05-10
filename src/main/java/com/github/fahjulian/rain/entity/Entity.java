@@ -2,20 +2,27 @@ package com.github.fahjulian.rain.entity;
 
 import java.util.Random;
 
-import com.github.fahjulian.rain.math.Position;
 import com.github.fahjulian.rain.graphics.Screen;
 import com.github.fahjulian.rain.graphics.Sprite;
+import com.github.fahjulian.rain.level.Level;
 
 public abstract class Entity {
+
+    public static abstract class Specs<T extends Entity> {
+        public abstract Class<? extends Entity> getType();
+    }
     
+    public interface Visible {
+        public abstract void render(Screen screen);
+        public abstract Sprite getSprite();
+    }
+
     protected static final Random random = new Random();
 
-    public Position pos;
     private boolean removed = false;
-    protected Sprite sprite;
+    protected Level level;
 
     public abstract void update();
-    public abstract void render(Screen screen);
 
     public void remove() {
         this.removed = true;
@@ -25,11 +32,7 @@ public abstract class Entity {
         return removed;
     }
 
-    public Position getCenter() {
-        return new Position(pos.x + 8, pos.y + 8);
-    }
-
-    public Sprite getSprite() {
-        return sprite;
+    public void setLevel(Level level) {
+        this.level = level;
     }
 }

@@ -6,7 +6,7 @@ import com.github.fahjulian.rain.math.GridPosition;
 
 public class Sprite {
     
-    public final int SIZE;
+    private int width, height;
     public int[] pixels;
     private Spritesheet sheet;
     private GridPosition sheetPosition;
@@ -31,8 +31,16 @@ public class Sprite {
         PLAYER_LEFT_1 = new Sprite(16, 15, 2, Spritesheet.TILES).flipHorizontally(),
         PLAYER_LEFT_2 = new Sprite(16, 15, 3, Spritesheet.TILES).flipHorizontally();
     
+    public static Sprite 
+        ARCHER = new Sprite(16, 0, 0, Spritesheet.ARCHER);
+
     public static Sprite
-        PROJECTILE_WIZARD = new Sprite(16, 0, 0, Spritesheet.PROJECTILES_WIZZARD);
+        PROJECTILE_WIZARD = new Sprite(16, 0, 0, Spritesheet.PROJECTILES_WIZZARD),
+        PROJECTILE_ARCHER = new Sprite(16, 0, 1, Spritesheet.ARCHER);
+
+    public static Sprite
+        PARTICLE_GREY = new Sprite(2, 0xffaaaaaa);
+        
     /**
      * Constructs a new Sprite from a Spritesheet
      * @param size Width & Height of the Sprite
@@ -41,11 +49,19 @@ public class Sprite {
      * @param sheet The spritesheet to load the sprite from
      */
     protected Sprite(int size, int row, int col, Spritesheet sheet) {
-        this.SIZE = size;
+        this.width = size;
+        this.height = size;
         this.sheetPosition = new GridPosition(row * size, col * size);
         this.sheet = sheet;
-        this.pixels = new int[SIZE * SIZE];
+        this.pixels = new int[width * height];
         load();
+    }
+
+    public Sprite(int width, int height, int color) {
+        this.width = width;
+        this.height = height;
+        this.pixels = new int[width * height];
+        this.fill(color);
     }
 
     /**
@@ -54,15 +70,16 @@ public class Sprite {
      * @param color The color of the Sprite
      */
     public Sprite(int size, int color) {
-        this.SIZE = size;
+        this.width = size;
+        this.height = size;
         this.pixels = new int[size * size];
         this.fill(color);
     }
 
     private void load() {
-        for (int y = 0; y < SIZE; y++) {
-            for (int x = 0; x < SIZE; x++) {
-                pixels[x + y * SIZE] = sheet.pixels[sheetPosition.col + x + (y + sheetPosition.row) * sheet.SIZE];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                pixels[x + y * width] = sheet.pixels[sheetPosition.col + x + (y + sheetPosition.row) * sheet.SIZE];
             }
         }
     }
@@ -73,12 +90,20 @@ public class Sprite {
     }
 
     private Sprite flipHorizontally() {
-        for (int y = 0; y < SIZE; y++) {
-            int[] row = Arrays.copyOfRange(pixels, y * SIZE, (y + 1) * SIZE);
-            for (int x = 0; x < SIZE; x++) {
-                pixels[x + y * SIZE] = row[SIZE - (1 + x)];
+        for (int y = 0; y < height; y++) {
+            int[] row = Arrays.copyOfRange(pixels, y * width, (y + 1) * width);
+            for (int x = 0; x < width; x++) {
+                pixels[x + y * width] = row[width - (1 + x)];
             }
         }
         return this;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }
